@@ -13,9 +13,9 @@ import code.classes.Node;
 import code.classes.Problem;
 import code.enums.Strategy;
 
-class Main {
+public class LLAPSearch {
 
-    public static String solve(String initialState, Strategy strategy, boolean visualize) {
+    public static String solve(String initialState, String strategy, boolean visualize) {
         /*
          * Given an initial state and a strategy it should return the sequence of
          * actions in order to reach the goal state
@@ -26,7 +26,7 @@ class Main {
          */
         Problem p = new Problem(initialState);
         SearchAlgorithm sa;
-        switch (strategy) {
+        switch (Strategy.valueOf(strategy)) {
             case BF:
                 sa = new BFS();
                 break;
