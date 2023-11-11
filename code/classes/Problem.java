@@ -1,18 +1,10 @@
+package code.classes;
+
 import java.util.ArrayList;
 
-enum Strategy {
-    BF,
-    DF,
-    ID,
-    UC,
-    GR1,
-    AS1,
-    GR2,
-    AS2
-}
+import code.enums.Actions;
 
-class Main {
-
+public class Problem {
     public static int unitPriceFood, unitPriceMaterials, unitPriceEnergy;
     public static int amountRequestFood, delayRequestFood;
     public static int amountRequestMaterials, delayRequestMaterials;
@@ -22,11 +14,19 @@ class Main {
 
     public static int priceBUILD2, foodUseBUILD2, materialsUseBUILD2, energyUseBUILD2, prosperityBUILD2;
 
+    public String initial;
+
+    public int numOfExpandedNodes = 0;
+
+    public Problem(String initialState) {
+        this.initial = initialState;
+    }
+
     public boolean goalTest(Node state) {
         return state.prosperity == 100;
     }
 
-    public Node makeInitNode(String initial) {
+    public Node getInitNode() {
         String[] split1 = initial.split(";");
         Node initState = new Node();
 
@@ -70,6 +70,10 @@ class Main {
         return initState;
     }
 
+    public String failureString() {
+        return "NOSOLUTION";
+    }
+
     public ArrayList<Actions> getActions(Node state) {
         // given a state it should return possible action allowed for this state
         ArrayList<Actions> list = new ArrayList<>();
@@ -84,6 +88,7 @@ class Main {
             list.add(Actions.BUILD2);
         }
 
+        // Request resources action
         if (!isDelay(state)) {
             list.add(Actions.RequestEnergy);
             list.add(Actions.RequestFood);
@@ -95,6 +100,9 @@ class Main {
     }
 
     public boolean isDelay(Node state) {
+        /*
+         * Check if there is at least on delayed request
+         */
         int lastFoodAction = lastFoodAction(state);
         int lastMaterialsAction = lastMaterialAction(state);
         int lastEnergyAction = lastEnergyAction(state);
@@ -102,7 +110,10 @@ class Main {
                 && lastEnergyAction > delayRequestEnergy);
     }
 
-    public int lastFoodAction(Node state){
+    public int lastFoodAction(Node state) {
+        /*
+         * Returns the last food request action
+         */
         int lastFoodAction = 0;
         while (state.parent != null) {
             lastFoodAction++;
@@ -114,7 +125,10 @@ class Main {
         return lastFoodAction;
     }
 
-    public int lastMaterialAction(Node state){
+    public int lastMaterialAction(Node state) {
+        /*
+         * Return last material request action
+         */
         int lastMaterialAction = 0;
         while (state.parent != null) {
             lastMaterialAction++;
@@ -126,7 +140,10 @@ class Main {
         return lastMaterialAction;
     }
 
-    public int lastEnergyAction(Node state){
+    public int lastEnergyAction(Node state) {
+        /*
+         * Returns the last performed request energy action
+         */
         int lastEnergyAction = 0;
         while (state.parent != null) {
             lastEnergyAction++;
@@ -139,6 +156,11 @@ class Main {
     }
 
     public Node result(Node state, Actions action) {
+        /*
+         * Given a state and an action it should return the new state after applying the
+         * action
+         */
+
         Node newState = new Node();
         newState.parent = state;
         newState.action = action;
@@ -146,23 +168,23 @@ class Main {
         newState.food = state.food;
         newState.material = state.material;
         newState.energy = state.energy;
-        newState.cost = state.cost;
-        
+        newState.money_spent = state.money_spent;
+
         // add delayed food resources
         int lastFoodAction = lastFoodAction(newState);
-        if(lastFoodAction == delayRequestFood){
+        if (lastFoodAction == delayRequestFood) {
             newState.setFood(newState.food + amountRequestFood);
         }
 
         // add delayed material resources
         int lastMaterialAction = lastMaterialAction(newState);
-        if(lastMaterialAction == delayRequestMaterials){
+        if (lastMaterialAction == delayRequestMaterials) {
             newState.setMaterial(newState.material + amountRequestMaterials);
         }
 
         // add delayed energy resources
         int lastEnergyAction = lastEnergyAction(newState);
-        if(lastEnergyAction == delayRequestEnergy){
+        if (lastEnergyAction == delayRequestEnergy) {
             newState.setEnergy(lastEnergyAction + amountRequestEnergy);
         }
 
@@ -172,14 +194,14 @@ class Main {
                 newState.setMaterial(newState.material - materialsUseBUILD1);
                 newState.setEnergy(newState.energy - energyUseBUILD1);
                 newState.setProsperity(newState.prosperity + prosperityBUILD1);
-                newState.setCost(newState.cost + priceBUILD1);
+                newState.setMoney_spent(newState.money_spent + priceBUILD1);
                 break;
             case BUILD2:
                 newState.setFood(newState.food - foodUseBUILD2);
                 newState.setMaterial(newState.material - materialsUseBUILD2);
                 newState.setEnergy(newState.energy - energyUseBUILD2);
                 newState.setProsperity(newState.prosperity + prosperityBUILD2);
-                newState.setCost(newState.cost + priceBUILD2);
+                newState.setMoney_spent(newState.money_spent + priceBUILD2);
                 break;
             case RequestFood:
                 newState.setFood(newState.food - 1);
@@ -202,10 +224,41 @@ class Main {
                 newState.setEnergy(newState.energy - 1);
                 break;
         }
+        numOfExpandedNodes++;
         return newState;
     }
 
-    public static void main(String[] args) {
-
+    public String getPlan(Node node) {
+        /*
+         * 
+         * Given the resulting node should return actions from
+         * the initial node till reaching the resulting node
+         */
+        ArrayList<Actions> list = new ArrayList<>();
+        while (node.parent != null) {
+            list.add(node.action);
+            node = node.parent;
+        }
+        StringBuilder actions = new StringBuilder();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            actions.append(list.get(i)).append(",");
+        }
+        return actions.toString().substring(0, actions.length() - 1);
     }
+
+    public String getMoneyCoString(Node node) {
+        /*
+         * Given the resulting node should return the money spent from
+         * the initial node till reaching the resulting node
+         */
+        return String.valueOf(node.money_spent);
+    }
+
+    public String getNumOfExpandedNodes() {
+        /*
+         * Returns the number of expanded nodes
+         */
+        return String.valueOf(numOfExpandedNodes);
+    }
+
 }

@@ -1,15 +1,23 @@
-public class Node {
-    int food, material, energy, prosperity, cost;
+package code.classes;
+import code.enums.Actions;
+
+public class Node{
+    
+    // state
+    int food, material, energy, prosperity, money_spent;
+    
     Node parent;
     Actions action;
+    public int depth;
 
-    public Node(int food, int material, int energy, int prosperity, int cost, Node parent) {
+    public Node(int food, int material, int energy, int prosperity, int cost, Node parent, int depth) {
         this.food = food;
         this.material = material;
         this.energy = energy;
         this.prosperity = prosperity;
-        this.cost = cost;
+        this.money_spent = cost;
         this.parent = parent;
+        this.depth = depth;
     }
 
     public Node() {
@@ -20,7 +28,7 @@ public class Node {
         if (food > 50 || food < 0) {
             throw new IllegalArgumentException("food must be between 0 and 50");
         }
-        setCost(this.cost + Math.abs(this.food - food) * Main.unitPriceFood);
+        setMoney_spent(this.money_spent + Math.abs(this.food - food) * Problem.unitPriceFood);
         this.food = food;
     }
 
@@ -28,7 +36,7 @@ public class Node {
         if (material > 50 || material < 0) {
             throw new IllegalArgumentException(" material should be between 0 and 50");
         }
-        setCost(this.cost + Math.abs(this.material - material) * Main.unitPriceMaterials);
+        setMoney_spent(this.money_spent + Math.abs(this.material - material) * Problem.unitPriceMaterials);
         this.material = material;
     }
 
@@ -36,7 +44,7 @@ public class Node {
         if (e > 50 || e < 0) {
             throw new IllegalArgumentException("energy should be between 0 and 50");
         }
-        setCost(this.cost + Math.abs(this.energy - e) * Main.unitPriceEnergy);
+        setMoney_spent(this.money_spent + Math.abs(this.energy - e) * Problem.unitPriceEnergy);
         this.energy = e;
     }
 
@@ -47,11 +55,15 @@ public class Node {
         this.prosperity = p;
     }
 
-    public void setCost(int c) {
+    public void setMoney_spent(int c) {
         if (c < 0 || c > 100000) {
             throw new IllegalArgumentException("cost should be positive and less than 100000");
         }
-        this.cost = c;
+        this.money_spent = c;
+    }
+
+    public int getCost() {
+        return money_spent;
     }
 
     public int h1() {
@@ -62,9 +74,17 @@ public class Node {
         return prosperity + food + material + energy;
     }
 
+    public int f1() {
+        return h1() + money_spent;
+    }
+
+    public int f2() {
+        return h2() + money_spent;
+    }
+
     public String toString() {
         return "food: " + food + "material: " + material + "energy: " + energy + "prosperity: " + prosperity
-                + "cost: " + cost + "action: " + action;
+                + "cost: " + money_spent + "action: " + action;
     }
 
 }

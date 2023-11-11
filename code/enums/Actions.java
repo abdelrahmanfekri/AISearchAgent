@@ -1,4 +1,6 @@
-public enum Actions{
+package code.enums;
+
+public enum Actions {
     RequestFood,
     RequestMaterials,
     RequestEnergy,
