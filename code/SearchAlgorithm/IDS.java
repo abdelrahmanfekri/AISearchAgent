@@ -9,7 +9,6 @@ import code.classes.Problem;
 // Depth Limit Search
 class DLS extends SearchAlgorithm {
     Stack<Node> stack = new Stack<>();
-    HashSet<String> visited = new HashSet<>();
     int maxDepth;
 
     public DLS(int depth) {
@@ -18,18 +17,13 @@ class DLS extends SearchAlgorithm {
 
     @Override
     void addNode(Node state) {
-        if (visited.contains(state.toString())) {
-            return;
-        }
         if (state.depth <= maxDepth) {
-            visited.add(state.toString());
             stack.push(state);
         }
     }
 
     @Override
     Node removeNode() {
-        visited.remove(stack.peek().toString());
         return stack.pop();
     }
 

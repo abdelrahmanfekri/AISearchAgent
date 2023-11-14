@@ -150,7 +150,7 @@ public class LLAPPublicGrading {
 		assertTrue("The output actions do not lead to a goal state.", pc.applyPlan(initialState9, solution));
 	}
 	@Test(timeout = 120000)
-	public void testa10() throws Exception {
+	public void testab10() throws Exception {
 		String solution = LLAPSearch.solve(initialState10, "BF", false);
 		solution = solution.replace(" ", "");
 		LLAPPlanChecker pc = new LLAPPlanChecker(initialState10);

@@ -8,21 +8,14 @@ import code.classes.Node;
 // Greedy search with first heuristic
 public class GR1 extends SearchAlgorithm {
     PriorityQueue<Node> queue = new PriorityQueue<>((o1, o2) -> o1.h1() - o2.h1());
-    HashSet<String> visited = new HashSet<>();
 
     @Override
     void addNode(Node state) {
-        if (!visited.contains(state.toString())) {
-            visited.add(state.toString());
             queue.add(state);
-        } else {
-            System.out.println("State already visited");
-        }
     }
 
     @Override
     Node removeNode() {
-        visited.remove(queue.peek().toString());
         return queue.remove();
     }
 

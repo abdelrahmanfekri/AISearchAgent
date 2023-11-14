@@ -13,21 +13,14 @@ public class UFS extends SearchAlgorithm {
             return o1.getCost() - o2.getCost();
         }
     });
-    HashSet<String> visited = new HashSet<>();
 
     @Override
     void addNode(Node state) {
-        if (!visited.contains(state.toString())) {
-            visited.add(state.toString());
             queue.add(state);
-        } else {
-            System.out.println("State already visited");
-        }
     }
 
     @Override
     Node removeNode() {
-        visited.remove(queue.peek().toString());
         return queue.remove();
     }
 
