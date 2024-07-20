@@ -16,19 +16,19 @@ class DLS extends SearchAlgorithm {
     }
 
     @Override
-    void addNode(Node state) {
+    protected void addNode(Node state) {
         if (state.depth <= maxDepth) {
             stack.push(state);
         }
     }
 
     @Override
-    Node removeNode() {
+    protected Node removeNode() {
         return stack.pop();
     }
 
     @Override
-    boolean isEmpty() {
+    protected boolean isEmpty() {
         return stack.isEmpty();
     }
 
@@ -39,19 +39,19 @@ public class IDS extends SearchAlgorithm {
     int maxDepth = 1000000;
 
     @Override
-    Node removeNode() {
+    protected Node removeNode() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'removeState'");
     }
 
     @Override
-    void addNode(Node state) {
+    protected void addNode(Node state) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addState'");
     }
 
     @Override
-    boolean isEmpty() {
+    protected boolean isEmpty() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'addState'");
     }

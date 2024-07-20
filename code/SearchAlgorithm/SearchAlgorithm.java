@@ -8,38 +8,41 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public abstract class SearchAlgorithm {
-    abstract void addNode(Node state);
+    protected abstract void addNode(Node state);
 
-    abstract Node removeNode();
+    protected abstract Node removeNode();
 
-    abstract boolean isEmpty();
+    protected abstract boolean isEmpty();
 
     HashSet<String> set = new HashSet<>();
-    HashSet<String> expanded = new HashSet<>();
 
     public Node search(Problem problem) {
         if (problem == null)
             throw new IllegalArgumentException("Problem should not be null");
         Node initialNode = problem.getInitNode();
         addNode(initialNode);
-        set.add(initialNode.toString());
+        set.add(initialNode.toHash());
+        if (Problem.showVisitedNodes)
+            System.out.println("Expanded Nodes: ");
         while (!isEmpty()) {
             Node node = removeNode();
             if (problem.goalTest(node)) {
                 return node;
             }
+            if (Problem.showVisitedNodes)
+                System.out.println(node);
             ArrayList<Actions> possibleActions = problem.getActions(node);
             for (Actions a : possibleActions) {
                 try {
                     Node newNode = problem.result(node, a);
-                    if(problem.goalTest(newNode)){
+                    if (problem.goalTest(newNode)) {
                         return newNode;
                     }
-                    if(!set.contains(newNode.toString())) {
-                        set.add(newNode.toString());
+                    if (!set.contains(newNode.toHash())) {
+                        set.add(newNode.toHash());
                         addNode(newNode);
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     // System.out.println(e);
                 }
             }

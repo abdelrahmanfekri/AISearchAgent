@@ -10,17 +10,17 @@ public class BFS extends SearchAlgorithm {
     Queue<Node> queue = new LinkedList<>();
 
     @Override
-    void addNode(Node state) {
+    protected void addNode(Node state) {
             queue.add(state);
     }
 
     @Override
-    Node removeNode() {
+    protected Node removeNode() {
         return queue.remove();
     }
 
     @Override
-    boolean isEmpty() {
+    protected boolean isEmpty() {
         return queue.isEmpty();
     }
 }

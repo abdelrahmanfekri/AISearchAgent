@@ -1,8 +1,9 @@
 package code.classes;
+
 import code.enums.Actions;
 
-public class Node{
-    
+public class Node {
+
     // state
     int food, material, energy, prosperity, money_spent;
 
@@ -28,30 +29,33 @@ public class Node{
         this.parent = null;
     }
 
-    public void increaseFood(int amount){
+    public void increaseFood(int amount) {
         food += amount;
         food = Math.min(food, 50);
     }
-    public void increaseMaterial(int amount){
+
+    public void increaseMaterial(int amount) {
         material += amount;
         material = Math.min(material, 50);
     }
-    public void increaseEnergy(int amount){
+
+    public void increaseEnergy(int amount) {
         energy += amount;
         energy = Math.min(energy, 50);
     }
 
-    public void setLastFoodAction(int lastFoodAction){
+    public void setLastFoodAction(int lastFoodAction) {
         this.lastFoodAction = Math.min(lastFoodAction, 3);
     }
 
-    public void setLastMaterialAction(int lastMaterialAction){
+    public void setLastMaterialAction(int lastMaterialAction) {
         this.lastMaterialAction = Math.min(lastMaterialAction, 3);
     }
 
-    public void setLastEnergyAction(int lastEnergyAction){
+    public void setLastEnergyAction(int lastEnergyAction) {
         this.lastEnergyAction = Math.min(lastEnergyAction, 3);
     }
+
     public void setFood(int food, Problem p) {
         if (food > 50 || food < 0) {
             throw new IllegalArgumentException("food must be between 0 and 50");
@@ -95,11 +99,12 @@ public class Node{
     }
 
     public int h1() {
-        return 100 - prosperity;
+        return (100 - prosperity);
     }
 
     public int h2() {
-        return prosperity + food + material + energy;
+        return (100 - prosperity) * (Problem.priceBUILD2 / Problem.prosperityBUILD2 / 2
+                + Problem.priceBUILD1 / Problem.prosperityBUILD1 / 2);
     }
 
     public int f1() {
@@ -122,9 +127,14 @@ public class Node{
         return lastEnergyAction;
     }
 
-    public String toString() {
+    public String toHash() {
         return "#" + food + "#" + material + "#" + energy
-                + "#" + lastFoodAction() +"#" + lastMaterialAction() + "#" + lastEnergyAction();
+                + "#" + lastFoodAction() + "#" + lastMaterialAction() + "#" + lastEnergyAction();
+    }
+
+    public String toString() {
+        return "(" + food + " , " + material + " , " + energy + " , " + money_spent + " , " + action + " , "
+                + lastFoodAction() + " , " + lastMaterialAction() + " , " + lastEnergyAction() + ")";
     }
 
 }

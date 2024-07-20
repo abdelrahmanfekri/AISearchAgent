@@ -10,17 +10,17 @@ public class GR1 extends SearchAlgorithm {
     PriorityQueue<Node> queue = new PriorityQueue<>((o1, o2) -> o1.h1() - o2.h1());
 
     @Override
-    void addNode(Node state) {
+    protected void addNode(Node state) {
             queue.add(state);
     }
 
     @Override
-    Node removeNode() {
+    protected Node removeNode() {
         return queue.remove();
     }
 
     @Override
-    boolean isEmpty() {
+    protected boolean isEmpty() {
         return queue.isEmpty();
     }
 

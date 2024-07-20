@@ -9,17 +9,17 @@ public class DFS extends SearchAlgorithm {
     Stack<Node> stack = new Stack<>();
 
     @Override
-    void addNode(Node state) {
+    protected void addNode(Node state) {
             stack.push(state);
     }
 
     @Override
-    Node removeNode() {
+    protected Node removeNode() {
         return stack.pop();
     }
 
     @Override
-    boolean isEmpty() {
+    protected boolean isEmpty() {
         return stack.isEmpty();
     }
 }

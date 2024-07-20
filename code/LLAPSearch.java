@@ -1,5 +1,11 @@
 package code;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
+import java.lang.management.OperatingSystemMXBean;
+import java.util.ArrayList;
+
 import code.SearchAlgorithm.AS1;
 import code.SearchAlgorithm.AS2;
 import code.SearchAlgorithm.BFS;
@@ -12,9 +18,8 @@ import code.SearchAlgorithm.UFS;
 import code.classes.Node;
 import code.classes.Problem;
 import code.enums.Strategy;
-import tests.LLAPPlanChecker;
 
-public class LLAPSearch {
+public class LLAPSearch extends SearchAlgorithm {
 
     public static String solve(String initialState, String strategy, boolean visualize) {
         /*
@@ -25,7 +30,7 @@ public class LLAPSearch {
          * monetaryCost: money spent
          * nodesExpanded: number of nodes expanded
          */
-        Problem p = new Problem(initialState);
+        Problem p = new Problem(initialState, visualize);
         SearchAlgorithm sa;
         switch (Strategy.valueOf(strategy)) {
             case BF:
@@ -58,6 +63,13 @@ public class LLAPSearch {
         Node solution = sa.search(p);
         if (solution == null) {
             return p.failureString();
+        }
+        if(Problem.showVisitedNodes){
+            System.out.println("Goal Path: ");
+            ArrayList<Node> list = p.getPath(solution);
+            for (Node n : list) {
+                System.out.println(n);
+            }
         }
 
         return p.getPlan(solution) + ";" + p.getMoneyCoString(solution) + ";" + p.getNumOfExpandedNodes();
@@ -150,9 +162,53 @@ public class LLAPSearch {
                 "30,2;19,1;15,1;" +
                 "300,5,7,3,20;" +
                 "500,8,6,3,40;";
-        String solution = LLAPSearch.solve(initialState10, "BF", false);
-        LLAPPlanChecker pc = new LLAPPlanChecker(initialState10);
+
+
+        runAlgorithm("BF", initialState10);
+        runAlgorithm("DF", initialState10);
+        runAlgorithm("ID", initialState10);
+        runAlgorithm("UC", initialState10);
+        runAlgorithm("GR1", initialState10);
+        runAlgorithm("AS1", initialState10);
+        runAlgorithm("GR2", initialState10);
+        runAlgorithm("AS2", initialState10);
+
+    }
+
+    public static void runAlgorithm(String algorithm, String init){
+        long start = System.currentTimeMillis();
+        long memoryUsage = getMemoryUsage();
+        double cpuUsage = getCPUUsage();
+        String solution = LLAPSearch.solve(init, algorithm, false);
+        double endCPU = getCPUUsage();
+        long end = System.currentTimeMillis();
+        System.out.println("Time of " + algorithm + ": " + (end - start));
+        System.out.println("Memory Usage: " + (getMemoryUsage() - memoryUsage) + " bytes");
+        System.out.println("CPU Usage: " + (endCPU - cpuUsage));
         System.out.println("Plan: " + solution);
-        System.out.println(pc.applyPlan(initialState10,solution));
+    }
+
+    public static long getMemoryUsage(){
+        Runtime runtime = Runtime.getRuntime();
+        return runtime.totalMemory() - runtime.freeMemory();
+    }
+    public static double getCPUUsage(){
+        OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+        return operatingSystemMXBean.getSystemLoadAverage() * 100;
+    }
+
+    @Override
+    protected void addNode(Node state) {
+
+    }
+
+    @Override
+    protected Node removeNode() {
+        return null;
+    }
+
+    @Override
+    protected boolean isEmpty() {
+        return false;
     }
 }

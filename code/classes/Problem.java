@@ -9,17 +9,20 @@ public class Problem {
     public static int amountRequestFood, delayRequestFood;
     public static int amountRequestMaterials, delayRequestMaterials;
     public static int amountRequestEnergy, delayRequestEnergy;
+    
+    public static boolean showVisitedNodes = false;
 
-    public  int priceBUILD1, foodUseBUILD1, materialsUseBUILD1, energyUseBUILD1, prosperityBUILD1;
+    public static int priceBUILD1, foodUseBUILD1, materialsUseBUILD1, energyUseBUILD1, prosperityBUILD1;
 
-    public  int priceBUILD2, foodUseBUILD2, materialsUseBUILD2, energyUseBUILD2, prosperityBUILD2;
+    public static int priceBUILD2, foodUseBUILD2, materialsUseBUILD2, energyUseBUILD2, prosperityBUILD2;
 
     public String initial;
 
     public int numOfExpandedNodes = 0;
 
-    public Problem(String initialState) {
+    public Problem(String initialState, boolean visualize) {
         this.initial = initialState;
+        showVisitedNodes = visualize;
     }
 
     public boolean goalTest(Node state) {
@@ -211,6 +214,25 @@ public class Problem {
         return actions.toString().substring(0, actions.length() - 1);
     }
 
+    public ArrayList<Node> getPath(Node node) {
+        /*
+         * 
+         * Given the resulting node should return actions from
+         * the initial node till reaching the resulting node
+         */
+        ArrayList<Node> list = new ArrayList<>();
+        while (node.parent != null) {
+            list.add(node);
+            node = node.parent;
+        }
+        // return reversed list
+        ArrayList<Node> reversedList = new ArrayList<>();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            reversedList.add(list.get(i));
+        }
+        return reversedList;
+    }
+
     public String getMoneyCoString(Node node) {
         /*
          * Given the resulting node should return the money spent from
@@ -233,7 +255,7 @@ public class Problem {
                 "9,1;9,2;9,1;" +
                 "358,14,25,23,39;" +
                 "5024,20,17,17,38;";
-        Problem p = new Problem(initialState10);
+        Problem p = new Problem(initialState10, false);
         Node node = p.getInitNode();
         System.out.println(node);
         Actions[] actions = {
